@@ -6,7 +6,21 @@
 
 <script>
 export default {
-	name: 'App'
+	name: 'App',
+	data() {
+		return {};
+	},
+	created() {
+		// 获取用户信息
+		// this.$store
+		// 	.dispatch('GETINFO', 'needless')
+		// 	.then(result => {
+		// 		console.log(result);
+		// 	})
+		// 	.catch(err => {
+		// 		console.log(err);
+		// 	});
+	}
 };
 </script>
 
@@ -22,8 +36,8 @@ export default {
 .login-wraper {
 	$bg: #2d3a4b;
 	$dark_gray: #889aa4;
-  $light_gray: #eee;
-  position: fixed;
+	$light_gray: #eee;
+	position: fixed;
 	height: 100%;
 	width: 100%;
 	background-color: $bg;
@@ -50,8 +64,8 @@ export default {
 		background: rgba(0, 0, 0, 0.1);
 		border-radius: 5px;
 		color: #454545;
-  }
-  .login-form {
+	}
+	.login-form {
 		position: absolute;
 		left: 0;
 		right: 0;

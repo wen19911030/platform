@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const router = express.Router();
 const user = require('../models/user.js');
-const utils = require('../assets/utils.js');
+const {resDataFormat, getUserInfo} = require('../assets/utils.js');
 
 const checkNotLogin = require('../middlewares/check').checkNotLogin;
 const checkLogin = require('../middlewares/check').checkLogin;
@@ -27,11 +27,15 @@ router.post('/register', checkNotLogin, (req, res) => {
   user
     .insert(req.body.username, req.body.password, req.body.email)
     .then(result => {
-      res.send(utils.resDataFormat(0, 'success', result));
+      res.send(resDataFormat(0, 'success', result));
     })
     .catch(err => {
-      res.send(utils.resDataFormat(1, err, {}));
+      res.send(resDataFormat(1, err, {}));
     });
+});
+
+router.get('/getInfo', checkLogin, (req, res) => {
+  res.send(resDataFormat(0, 'success', getUserInfo(req.session.user)));
 });
 
 router.post('/login', checkNotLogin, (req, res) => {
@@ -42,12 +46,19 @@ router.post('/login', checkNotLogin, (req, res) => {
       if (password === oriPassword) {
         // update logintime
         user.update(req.body.username, '', '', false, true);
+        // TODO 不能删除对象属性？
         delete result.password;
-        req.session.user = result;
-        res.send(utils.resDataFormat(0, 'success', result));
+        const userInfo = {
+          username: result.username,
+          email: result.email
+        };
+        req.session.user = userInfo;
+        res.send(resDataFormat(0, 'success', userInfo));
+      } else {
+        res.send(resDataFormat(-1, '密码错误'));
       }
     } else {
-      res.send(utils.resDataFormat(1, '用户名不存在', {}));
+      res.send(resDataFormat(-1, '用户名不存在'));
     }
   });
 });

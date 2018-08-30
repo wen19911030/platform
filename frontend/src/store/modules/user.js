@@ -1,8 +1,7 @@
 import { login, logout, getInfo, register } from '@/api/login';
-import { getToken, setToken, removeToken } from '@/utils/auth';
 
 const state = {
-  token: getToken(),
+  user: {},
   name: '',
   avatar: '',
   roles: []
@@ -13,8 +12,8 @@ const getters = {
   }
 };
 const mutations = {
-  TOKEN(state, newV = '') {
-    state.token = newV;
+  USERINFO(state, user = {}) {
+    state.user = user;
   }
 };
 const actions = {
@@ -22,9 +21,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(userInfo.username.trim(), userInfo.userpwd.trim())
         .then(result => {
-          const token = result.data && result.data.token;
-          setToken(token);
-          commit('TOKEN', token);
+          commit('USERINFO', result);
           resolve(result);
         })
         .catch(err => {
@@ -40,14 +37,32 @@ const actions = {
         userInfo.email.trim()
       )
         .then(result => {
-          const token = result.data && result.data.token;
-          setToken(token);
-          commit('TOKEN', token);
+          commit('USERINFO', result);
           resolve(result);
         })
         .catch(err => {
           reject(err);
         });
+    });
+  },
+  GETINFO({ commit }, flag) {
+    return new Promise((resolve, reject) => {
+      getInfo(flag)
+        .then(result => {
+          commit('USERINFO', result);
+          resolve(result);
+        })
+        .catch(err => reject(err));
+    });
+  },
+  LOGOUT({ commit }) {
+    return new Promise((resolve, reject) => {
+      logout()
+        .then(result => {
+          commit('USERINFO', {});
+          resolve(result);
+        })
+        .catch(err => reject(err));
     });
   }
 };

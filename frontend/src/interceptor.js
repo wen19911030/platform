@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { Message, MessageBox } from 'element-ui';
+import { list2 } from './assets/connect.list';
+
+const storage = {}; // 接口存储器
 
 let baseURL = '';
 if (process.env.NODE_ENV === 'test') {
@@ -15,7 +18,17 @@ const request = axios.create({
 
 request.interceptors.request.use(
   config => {
-    // Do something before request is sent
+    // console.log(config);
+    let url = config.url;
+    // 判断该请求是不是在list2列表中；
+    let isExist = list2.some(item => item.indexOf(url.split('?')[0]) > -1);
+    if (!isExist) {
+      if (storage[url]) {
+        return;
+      }
+      storage[url] = true;
+    }
+
     return config;
   },
   error => {
@@ -27,14 +40,30 @@ request.interceptors.request.use(
 // Add a response interceptor
 request.interceptors.response.use(
   response => {
+    let url = response.config.url.split('?')[0];
+    // let isExist = list2.some(item => item.indexOf(url.split('?')[0]) > -1);
+    storage[url] = false;
+
     // Do something with response data
     const res = response.data;
     if (res.code !== 0) {
-      Message({
-        message: res.message,
-        type: 'error',
-        duration: 5 * 1000
-      });
+      // 不需要在拦截器提示的，params参数里有interceptorHint信息，且等于needless
+      if (
+        !(
+          response.config.params &&
+          response.config.params.interceptorHint === 'needless'
+        )
+      ) {
+        Message({
+          message: res.message,
+          type: 'error',
+          duration: 3 * 1000
+        });
+      }
+      // 1: 用户未登录
+      if (res.code === 1) {
+        // 不可再此跳转到登录页面，会导致router.beforeEach循环调用
+      }
       // 50008:非法的token; 50012:其他客户端登录了;  50014:Token 过期了;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         MessageBox.confirm(
@@ -53,7 +82,7 @@ request.interceptors.response.use(
       }
       return Promise.reject('error');
     }
-    return response.data;
+    return res.data;
   },
   error => {
     console.log(error);

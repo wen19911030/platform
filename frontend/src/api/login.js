@@ -23,11 +23,11 @@ export function login(username, password) {
   });
 }
 
-export function getInfo(token) {
+export function getInfo(interceptorHint) {
   return request({
-    url: '/api/user/info',
+    url: '/api/user/getInfo',
     method: 'get',
-    params: { token }
+    params: { interceptorHint }
   });
 }
 
