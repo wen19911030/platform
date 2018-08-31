@@ -22,7 +22,7 @@
       </el-form-item>
       <div class="tips">
         <router-link to="/register" style="margin-right:20px;">注册新用户</router-link>
-        <router-link to="/forgetpassword">忘记密码</router-link>
+        <router-link to="/find-password">忘记密码</router-link>
       </div>
     </el-form>
   </div>

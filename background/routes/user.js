@@ -4,13 +4,28 @@ const fs = require('fs');
 const path = require('path');
 const router = express.Router();
 const user = require('../models/user.js');
-const {resDataFormat, getUserInfo} = require('../assets/utils.js');
+const {resDataFormat, getUserInfo, getRandom} = require('../assets/utils.js');
+const sendMail = require('../services/email.js');
 
 const checkNotLogin = require('../middlewares/check').checkNotLogin;
 const checkLogin = require('../middlewares/check').checkLogin;
 
+// esa加密
+let rsaPubKey = null;
+fs.readFile(path.join(__dirname, '../assets/rsa_1024_pub.pem'), function(
+  err,
+  data
+) {
+  if (err) {
+    return console.error(err);
+  }
+  const pubKey = data.toString();
+  rsaPubKey = new nodeRSA(pubKey);
+  rsaPubKey.setOptions({encryptionScheme: 'pkcs1'});
+});
+
 // rsa解密
-let rsakey = null;
+let rsaPrivKey = null;
 fs.readFile(path.join(__dirname, '../assets/rsa_1024_priv.pem'), function(
   err,
   data
@@ -27,15 +42,21 @@ router.post('/register', checkNotLogin, (req, res) => {
   user
     .insert(req.body.username, req.body.password, req.body.email)
     .then(result => {
+      // TODO 发送验证邮件
+      sendMail(
+        result.email,
+        '验证邮件',
+        `<p>这是来自****网站的验证邮件，请点击链接进行验证<a href="http://localhost:3000/verify/email/${btoa(
+          req.body.username
+        )}">http://localhost:3000/verify/email/${btoa(
+          req.body.username
+        )}</a></p>`
+      );
       res.send(resDataFormat(0, 'success', result));
     })
     .catch(err => {
       res.send(resDataFormat(1, err, {}));
     });
-});
-
-router.get('/getInfo', checkLogin, (req, res) => {
-  res.send(resDataFormat(0, 'success', getUserInfo(req.session.user)));
 });
 
 router.post('/login', checkNotLogin, (req, res) => {
@@ -57,6 +78,40 @@ router.post('/login', checkNotLogin, (req, res) => {
       } else {
         res.send(resDataFormat(-1, '密码错误'));
       }
+    } else {
+      res.send(resDataFormat(-1, '用户名不存在'));
+    }
+  });
+});
+
+router.get('/getInfo', checkLogin, (req, res) => {
+  res.send(resDataFormat(0, 'success', getUserInfo(req.session.user)));
+});
+
+router.post('/findPassword', checkNotLogin, (req, res) => {
+  user.findOne({username: req.body.username}).then(result => {
+    if (result && result.username) {
+      let newPs = getRandom(8);
+      let str = rsakey.encrypt(newPs, 'base64');
+      // 更新密码
+      const p1 = user.update(req.body.username, str, '', false, true);
+      // 发送邮件
+      const p2 = sendMail(
+        result.email,
+        '找回密码',
+        `<p>新密码为${newPs}，登陆后请尽早更换密码。</p>`
+      );
+      Promise.all([p1, p2])
+        .then(results => {
+          res.send(resDataFormat(0, `新密码已发送到您的${result.email}邮箱里`));
+        })
+        .catch(err => {
+          // TODO 错误处理，
+          // 1：邮件发送成功，密码更新失败
+          // 2: 邮件发送失败，密码更新成功
+          console.log(err);
+          res.send(resDataFormat(-1, '邮件发送失败'));
+        });
     } else {
       res.send(resDataFormat(-1, '用户名不存在'));
     }

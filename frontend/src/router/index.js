@@ -11,6 +11,11 @@ Vue.use(Router);
 const router = new Router({
   routes: [
     {
+      path: '/',
+      name: 'home',
+      component: () => import('../pages/home.vue')
+    },
+    {
       path: '/404',
       name: '404',
       component: () => import('../pages/404'),
@@ -27,9 +32,9 @@ const router = new Router({
       component: () => import('../pages/register.vue')
     },
     {
-      path: '/',
-      name: 'home',
-      component: () => import('../pages/home.vue')
+      path: '/find-password',
+      name: 'find-password',
+      component: () => import('../pages/find-password.vue')
     },
     {
       path: '*',
@@ -39,7 +44,7 @@ const router = new Router({
   ]
 });
 
-const whiteList = ['login', 'register']; // 不重定向白名单
+const whiteList = ['login', 'register', 'find-password']; // 不重定向白名单
 router.beforeEach((to, from, next) => {
   NProgress.start();
   if (store.getters.user.username) {

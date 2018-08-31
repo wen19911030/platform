@@ -37,3 +37,14 @@ export function logout() {
     method: 'post'
   });
 }
+
+export function findPassword(username = '') {
+  return request({
+    url: '/api/user/findPassword',
+    method: 'post',
+    timeout: 20000,
+    data: {
+      username
+    }
+  });
+}

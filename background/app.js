@@ -30,6 +30,7 @@ app.use(bodyParser.json());
 const userRouter = require('./routes/user');
 
 app.use('/api/user', userRouter);
+app.use('/verify', userRouter);
 
 app.listen(config.port, () => {
   console.log('node start');

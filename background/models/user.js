@@ -1,5 +1,5 @@
 const moment = require('moment');
-const mongoose = require('../db.js');
+const mongoose = require('../services/db.js');
 const UserSchema = require('../schemas/user.js');
 
 const user = mongoose.model('users', UserSchema);
@@ -91,8 +91,11 @@ function findOne(conditions) {
   });
 }
 
+function deleteOne() {}
+
 module.exports = {
   insert,
   update,
-  findOne
+  findOne,
+  deleteOne
 };

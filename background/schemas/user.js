@@ -1,7 +1,7 @@
 /**
  * 用户信息
  */
-const mongoose = require('../db.js');
+const mongoose = require('../services/db.js');
 
 const UserSchema = new mongoose.Schema({
   username: {type: String}, // 用户账号

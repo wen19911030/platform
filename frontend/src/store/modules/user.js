@@ -21,7 +21,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(userInfo.username.trim(), userInfo.userpwd.trim())
         .then(result => {
-          commit('USERINFO', result);
+          commit('USERINFO', result.data);
           resolve(result);
         })
         .catch(err => {
@@ -37,7 +37,7 @@ const actions = {
         userInfo.email.trim()
       )
         .then(result => {
-          commit('USERINFO', result);
+          commit('USERINFO', result.data);
           resolve(result);
         })
         .catch(err => {
@@ -49,7 +49,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(flag)
         .then(result => {
-          commit('USERINFO', result);
+          commit('USERINFO', result.data);
           resolve(result);
         })
         .catch(err => reject(err));

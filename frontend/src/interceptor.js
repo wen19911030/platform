@@ -82,7 +82,7 @@ request.interceptors.response.use(
       }
       return Promise.reject('error');
     }
-    return res.data;
+    return res;
   },
   error => {
     console.log(error);
