@@ -16,11 +16,12 @@ const user = mongoose.model('users', UserSchema);
 // 	return this.model("User").find({ email: email }, callback);
 // };
 
-function insert(username, password, email) {
+function insert(username, password, email, emailIsVerify = false) {
   const doc = {
     username,
     password,
     email,
+    emailIsVerify,
     createtime: Date.now(), // 创建时间
     updatetime: Date.now(), // 更新时间
     logintime: Date.now() // 最近登录时间
@@ -51,23 +52,12 @@ function insert(username, password, email) {
   });
 }
 
-function update(username, password, email, isUpdate, isLogin) {
+function update(username, val = {}) {
   const conditions = {
     username
   };
   let updatestr = {};
-  if (password) {
-    updatestr.password = password;
-  }
-  if (email) {
-    updatestr.email = email;
-  }
-  if (isUpdate) {
-    updatestr.updatetime = Date.now();
-  }
-  if (isLogin) {
-    updatestr.logintime = Date.now();
-  }
+  Object.assign(updatestr, val);
   return new Promise((resolve, reject) => {
     user.updateOne(conditions, updatestr, function(err, res) {
       if (err) {

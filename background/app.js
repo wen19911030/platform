@@ -28,9 +28,15 @@ app.use(bodyParser.json());
 
 // 导入路由
 const userRouter = require('./routes/user');
+const verifyRouter = require('./routes/verify');
+
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
 
 app.use('/api/user', userRouter);
-app.use('/verify', userRouter);
+app.use('/verify', verifyRouter);
 
 app.listen(config.port, () => {
   console.log('node start');

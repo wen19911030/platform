@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const config = require('config-lite')(__dirname);
 
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 /**
  * 连接
  */

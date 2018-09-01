@@ -46,15 +46,20 @@ router.post('/register', checkNotLogin, (req, res) => {
       sendMail(
         result.email,
         '验证邮件',
-        `<p>这是来自****网站的验证邮件，请点击链接进行验证<a href="http://localhost:3000/verify/email/${btoa(
+        `<p>这是来自****网站的验证邮件，请点击链接进行验证<a href="http://localhost:3000/verify/email/${Buffer.from(
           req.body.username
-        )}">http://localhost:3000/verify/email/${btoa(
+        ).toString('base64')}">http://localhost:3000/verify/email/${Buffer.from(
           req.body.username
-        )}</a></p>`
-      );
+        ).toString('base64')}</a></p>`
+      ).then(result => {
+        if (result === 'ok') {
+          console.log(result);
+        }
+      });
       res.send(resDataFormat(0, 'success', result));
     })
     .catch(err => {
+      console.log(err);
       res.send(resDataFormat(1, err, {}));
     });
 });
@@ -66,7 +71,7 @@ router.post('/login', checkNotLogin, (req, res) => {
       let oriPassword = rsakey.decrypt(result.password, 'utf8');
       if (password === oriPassword) {
         // update logintime
-        user.update(req.body.username, '', '', false, true);
+        user.update(req.body.username, {logintime: Date.now()});
         // TODO 不能删除对象属性？
         delete result.password;
         const userInfo = {
@@ -94,7 +99,7 @@ router.post('/findPassword', checkNotLogin, (req, res) => {
       let newPs = getRandom(8);
       let str = rsakey.encrypt(newPs, 'base64');
       // 更新密码
-      const p1 = user.update(req.body.username, str, '', false, true);
+      const p1 = user.update(req.body.username, {password, str});
       // 发送邮件
       const p2 = sendMail(
         result.email,
