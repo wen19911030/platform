@@ -6,6 +6,7 @@ const router = express.Router();
 const user = require('../models/user.js');
 const {resDataFormat, getUserInfo, getRandom} = require('../assets/utils.js');
 const sendMail = require('../services/email.js');
+const {getDefaultLogger, getServiceLogger} = require('../services/log.js');
 
 const checkNotLogin = require('../middlewares/check').checkNotLogin;
 const checkLogin = require('../middlewares/check').checkLogin;
@@ -90,6 +91,7 @@ router.post('/login', checkNotLogin, (req, res) => {
 });
 
 router.get('/getInfo', checkLogin, (req, res) => {
+  getServiceLogger('userService').info('已登录');
   res.send(resDataFormat(0, 'success', getUserInfo(req.session.user)));
 });
 

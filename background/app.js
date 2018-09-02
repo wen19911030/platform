@@ -3,6 +3,8 @@ const app = express();
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const config = require('config-lite')(__dirname);
+const winston = require('winston');
+// const expressWinston = require('express-winston');
 
 // session 中间件
 app.use(
@@ -35,8 +37,39 @@ app.use((req, res, next) => {
   next();
 });
 
+// 正常请求的日志
+// app.use(
+//   expressWinston.logger({
+//     format: winston.format.timestamp(),
+//     transports: [
+//       new winston.transports.Console({
+//         json: true,
+//         colorize: true
+//       }),
+//       new winston.transports.File({
+//         filename: 'logs/success.log'
+//       })
+//     ]
+//   })
+// );
+
 app.use('/api/user', userRouter);
 app.use('/verify', verifyRouter);
+
+// 错误请求的日志
+// app.use(
+//   expressWinston.errorLogger({
+//     transports: [
+//       new winston.transports.Console({
+//         json: true,
+//         colorize: true
+//       }),
+//       new winston.transports.File({
+//         filename: 'logs/error.log'
+//       })
+//     ]
+//   })
+// );
 
 app.listen(config.port, () => {
   console.log('node start');

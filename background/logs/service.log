@@ -1,0 +1,13 @@
+{"module":"userService","level":"info","message":"用户未登录"}
+{"module":"userService","level":"info","message":"用户未登录"}
+{"module":"userService","level":"info","message":"用户未登录"}
+{"module":"userService","level":"info","message":"用户未登录"}
+[32minfo[39m: 用户未登录 {"module":"userService"}
+2018-09-02T14:47:09.455Z [undefined] [32minfo[39m: 用户未登录
+2018-09-02T14:50:09.232Z [[32MINFO[39M] default: 用户未登录
+2018-09-02T14:53:12.117Z [[32minfo[39m] default: 用户未登录
+2018-09-02T14:53:59.712Z [[32minfo[39m] default: 用户未登录
+2018-09-02T14:55:14.348Z [[32minfo[39m] userService: 用户未登录
+2018-09-02T14:57:38.513Z [[32minfo[39m] userService: 用户未登录
+2018-09-02T14:57:58.668Z [[32minfo[39m] userService: [32m用户未登录[39m
+2018-09-02T15:02:35.140Z [info] userService: 用户未登录
