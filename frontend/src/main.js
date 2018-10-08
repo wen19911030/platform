@@ -1,18 +1,17 @@
 require('es6-promise/auto');
 
 import Vue from 'vue';
-import { Form, FormItem, Input, Button, Loading, Message } from 'element-ui';
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 import 'normalize.css/normalize.css'; // A modern alternative to CSS resets
 
 import App from './App';
 import router from './router';
 import store from './store';
-import iconSvg from './components/iconSvg';
+import svgIcon from './components/svg-icon';
 
-const comArr = [Form, FormItem, Input, Button, iconSvg];
-comArr.forEach(com => {
-  Vue.component(com.name, com);
-});
+Vue.component('svg-icon', svgIcon);
+Vue.use(ElementUI);
 // 自动引入 @/src/icons 下面所有的图标了
 // require.context有三个参数：
 // directory：说明需要检索的目录
@@ -21,11 +20,6 @@ comArr.forEach(com => {
 const requireAll = requireContext => requireContext.keys().map(requireContext);
 const req = require.context('./assets/icons', false, /\.svg$/);
 requireAll(req);
-// Vue.component(FromItem.name, Message);
-// Vue.component(Input.name, Message);
-
-Vue.prototype.$loading = Loading.service;
-Vue.prototype.$message = Message;
 
 Vue.config.productionTip = false;
 

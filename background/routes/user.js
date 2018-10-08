@@ -35,8 +35,8 @@ fs.readFile(path.join(__dirname, '../assets/rsa_1024_priv.pem'), function(
     return console.error(err);
   }
   const privKey = data.toString();
-  rsakey = new nodeRSA(privKey);
-  rsakey.setOptions({encryptionScheme: 'pkcs1'});
+  rsaPrivKey = new nodeRSA(privKey);
+  rsaPrivKey.setOptions({encryptionScheme: 'pkcs1'});
 });
 
 router.post('/register', checkNotLogin, (req, res) => {
@@ -68,8 +68,8 @@ router.post('/register', checkNotLogin, (req, res) => {
 router.post('/login', checkNotLogin, (req, res) => {
   user.findOne({username: req.body.username}).then(result => {
     if (result && result.username) {
-      let password = rsakey.decrypt(req.body.password, 'utf8');
-      let oriPassword = rsakey.decrypt(result.password, 'utf8');
+      let password = rsaPrivKey.decrypt(req.body.password, 'utf8');
+      let oriPassword = rsaPrivKey.decrypt(result.password, 'utf8');
       if (password === oriPassword) {
         // update logintime
         user.update(req.body.username, {logintime: Date.now()});
@@ -91,7 +91,6 @@ router.post('/login', checkNotLogin, (req, res) => {
 });
 
 router.get('/getInfo', checkLogin, (req, res) => {
-  getServiceLogger('userService').info('已登录');
   res.send(resDataFormat(0, 'success', getUserInfo(req.session.user)));
 });
 
@@ -99,7 +98,7 @@ router.post('/findPassword', checkNotLogin, (req, res) => {
   user.findOne({username: req.body.username}).then(result => {
     if (result && result.username) {
       let newPs = getRandom(8);
-      let str = rsakey.encrypt(newPs, 'base64');
+      let str = rsaPubKey.encrypt(newPs, 'base64');
       // 更新密码
       const p1 = user.update(req.body.username, {password, str});
       // 发送邮件

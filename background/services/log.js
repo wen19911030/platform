@@ -22,7 +22,6 @@ const myFormat = winston.format.combine(
   // winston.format.colorize({all: true}),
   winston.format.timestamp(),
   winston.format.printf(info => {
-    console.log(info);
     const message = info.message || '';
     // module，标记日志来自哪个模块
     const module = info.module || 'default';

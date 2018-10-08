@@ -13,7 +13,13 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: () => import('../pages/home.vue')
+      component: () => import('../pages/home.vue'),
+      children: []
+    },
+    {
+      path: '/merchant',
+      component: () => import('../components/content.vue'),
+      children: []
     },
     {
       path: '/404',
