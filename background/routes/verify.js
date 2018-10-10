@@ -22,7 +22,7 @@ router.get('/email/:username', (req, res) => {
     })
     .catch(err => {
       console.log(err);
-      res.send(resDataFormat(0, 'email is failed'));
+      res.send(resDataFormat(0, 'email is error'));
     });
 });
 
