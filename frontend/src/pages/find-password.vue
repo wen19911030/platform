@@ -1,5 +1,5 @@
 <template>
-  <div class="wraper login-wraper password-wraper">
+  <div class="wrapper login-wrapper password-wrapper">
     <el-form class="password-form" autoComplete="off" :model="passwordForm" :rules="loginRules" ref="passwordForm" label-position="left">
       <h3 class="title">找回密码</h3>
       <el-form-item prop="username">
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { findPassword } from '../api/login';
+import { findPassword } from '@/api/user';
 export default {
 	name: 'find-password',
 	data() {
@@ -81,7 +81,7 @@ export default {
 </script>
 
 <style lang="scss">
-.password-wraper {
+.password-wrapper {
 	.password-form {
 		position: absolute;
 		left: 0;

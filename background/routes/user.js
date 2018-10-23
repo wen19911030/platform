@@ -57,7 +57,12 @@ router.post('/register', checkNotLogin, (req, res) => {
           console.log(result);
         }
       });
-      res.send(resDataFormat(0, 'success', result));
+      const userInfo = {
+        username: result.username,
+        email: result.email
+      };
+      req.session.user = userInfo;
+      res.send(resDataFormat(0, 'success', userInfo));
     })
     .catch(err => {
       console.log(err);
@@ -88,6 +93,11 @@ router.post('/login', checkNotLogin, (req, res) => {
       res.send(resDataFormat(-1, '用户名不存在'));
     }
   });
+});
+
+router.post('/logout', checkLogin, (req, res) => {
+  req.session.user = null;
+  res.send(resDataFormat(0, 'success', {}));
 });
 
 router.get('/getInfo', checkLogin, (req, res) => {
@@ -122,6 +132,39 @@ router.post('/findPassword', checkNotLogin, (req, res) => {
       res.send(resDataFormat(-1, '用户名不存在'));
     }
   });
+});
+
+router.post('/changePassword', checkLogin, (req, res) => {
+  const userInfo = req.session.user;
+  const oldPass = rsaPrivKey.decrypt(req.body.oldPass, 'utf8');
+  user.findOne({username: userInfo.username}).then(result => {
+    if (result && result.username) {
+      let pass1 = rsaPrivKey.decrypt(result.password, 'utf8');
+      if (oldPass === pass1) {
+        user
+          .update(userInfo.username, {password: req.body.newPass})
+          .then(data => {
+            console.log(data);
+            res.send(resDataFormat(0, '密码已更新'));
+          })
+          .catch(err => console.log(err));
+      } else {
+        res.send(resDataFormat(-1, '密码错误'));
+      }
+    } else {
+      res.send(resDataFormat(-1, '用户名不存在'));
+    }
+  });
+});
+
+router.post('/writeOff', checkLogin, (req, res) => {
+  user
+    .deleteUser({username: req.session.user.username})
+    .then(result => {
+      req.session.user = null;
+      res.send(resDataFormat(0, 'success', {}));
+    })
+    .catch(err => console.log(err));
 });
 
 module.exports = router;

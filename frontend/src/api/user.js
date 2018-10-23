@@ -48,3 +48,29 @@ export function findPassword(username = '') {
     }
   });
 }
+
+/**
+ * 更换密码
+ *
+ * @export
+ * @param {string} [oldPass=''] 旧密码
+ * @param {string} [newPass=''] 新密码
+ * @returns
+ */
+export function changePass(oldPass = '', newPass = '') {
+  return request({
+    url: '/api/user/changePassword',
+    method: 'post',
+    data: {
+      oldPass,
+      newPass
+    }
+  });
+}
+
+export function writeOff() {
+  return request({
+    url: '/api/user/writeOff',
+    method: 'post'
+  });
+}

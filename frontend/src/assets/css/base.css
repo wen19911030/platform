@@ -1,10 +1,214 @@
-html, body{
-  width: 100%;
-  height: 100%;
+@charset "UTF-8";
+/*CSS Reset*/
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+textarea,
+p,
+blockquote,
+th,
+td,
+header,
+hgroup,
+nav,
+section,
+article,
+aside,
+footer,
+figure,
+figcaption,
+menu,
+button {
+  margin: 0;
+  padding: 0;
 }
 
-#app, .wraper{
-  width: 100%;
-  height: 100%;
+html,
+body,
+#app {
+  width: 100vw;
+  height: 100vh;
+}
 
+body {
+  font-family: '微软雅黑', 'Helvetica Neue', Helvetica, STHeiTi, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  outline: 0;
+  color: #666666;
+  font-size: 14px;
+  line-height: 1;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 100%;
+  font-weight: normal;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+caption,
+th {
+  text-align: left;
+}
+
+fieldset,
+img {
+  border: 0;
+}
+
+li {
+  list-style: none;
+}
+
+ins {
+  text-decoration: none;
+}
+
+del {
+  text-decoration: line-through;
+}
+
+input,
+button,
+textarea,
+select,
+optgroup,
+option {
+  font-family: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  outline: 0;
+}
+option[disabled='disabled'] {
+  color: #c0c4cc;
+}
+
+button {
+  -webkit-appearance: none;
+  border: 0;
+  background: none;
+}
+
+a {
+  -webkit-touch-callout: none;
+  text-decoration: none;
+}
+
+:focus {
+  outline: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input::-webkit-input-placeholder {
+  color: #c0c4cc;
+}
+
+input::-moz-placeholder {
+  color: #c0c4cc;
+}
+
+input:-moz-placeholder {
+  color: #c0c4cc;
+}
+
+input:-ms-input-placeholder {
+  color: #c0c4cc;
+}
+
+em,
+i {
+  font-style: normal;
+}
+
+.clearfix:after {
+  display: table;
+  content: '';
+  clear: both;
+}
+.pull-left {
+  float: left;
+}
+.pull-right {
+  float: right;
+}
+
+/*
+整体布局
+----------------------------------------------------------------*/
+.page-vbs {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  background-color: #f7f7f7;
+}
+.wrap-nav {
+  overflow: auto;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 200px;
+  background-color: #26354b;
+}
+.con {
+  width: calc(100% - 200px);
+  margin: 0 0 0 200px;
+}
+.main {
+  width: 100%;
+  padding: 60px 0 0 0;
+}
+.header {
+  position: fixed;
+  top: 0;
+  z-index: 12;
+  width: calc(100% - 200px);
+  height: 60px;
+  background-color: #26354b;
+}
+.wrap-page {
+  padding: 20px 15px;
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 1279px) {
+  body {
+    overflow-x: auto;
+  }
+  #app .page-decision {
+    width: 1279px;
+  }
+  #app .con,
+  #app .main,
+  #app .header {
+    width: 1080px;
+  }
 }

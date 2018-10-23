@@ -1,5 +1,5 @@
 <template>
-  <div class="wraper login-wraper register-wraper">
+  <div class="wrapper login-wrapper register-wrapper">
     <el-form class="register-form" autoComplete="off" :model="registerForm" :rules="registerRules" ref="registerForm" label-position="left">
       <h3 class="title">注册</h3>
       <el-form-item prop="username">
@@ -44,6 +44,16 @@ rsakey.setOptions({ encryptionScheme: 'pkcs1' });
 export default {
 	name: 'register',
 	data() {
+		const validatePass = (rule, value, callback) => {
+			const reg = /^\w{8,16}$/;
+			if (value === '') {
+				callback(new Error('请输入密码'));
+			} else if (!reg.test(value)) {
+				callback(new Error('密码格式错误，只支持数字，字母和下划线，长度为8到16位'));
+			} else {
+				callback();
+			}
+		};
 		return {
 			registerForm: {
 				username: '',
@@ -64,19 +74,7 @@ export default {
 						trigger: 'blur'
 					}
 				],
-				password: [
-					{
-						required: true,
-						message: '请输入密码',
-						trigger: 'blur'
-					},
-					{
-						min: 6,
-						max: 15,
-						message: '长度在 8 到 15 个字符',
-						trigger: 'blur'
-					}
-				],
+				password: [{ validator: validatePass, trigger: 'blur' }],
 				email: [
 					{
 						required: true,
@@ -111,6 +109,7 @@ export default {
 								type: 'success',
 								message: '注册成功'
 							});
+							this.$router.push({ path: '/' });
 						})
 						.catch(err => {
 							console.log(err);
@@ -128,7 +127,7 @@ export default {
 </script>
 
 <style lang="scss">
-.register-wraper {
+.register-wrapper {
 	.register-form {
 		position: absolute;
 		left: 0;

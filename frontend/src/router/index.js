@@ -11,10 +11,30 @@ Vue.use(Router);
 const router = new Router({
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: () => import('../pages/home.vue'),
-      children: []
+      path: '',
+      component: () => import('../components/content.vue'),
+      hidden: true,
+      children: [
+        {
+          path: '/',
+          name: 'home',
+          component: () => import('../pages/home'),
+          meta: {
+            crumbs: [{ name: 'home', value: '主页' }]
+          }
+        },
+        {
+          path: '/user/change-password',
+          name: 'change-password',
+          component: () => import('../pages/change-password'),
+          meta: {
+            crumbs: [
+              { name: '', value: '用户管理' },
+              { name: 'change-password', value: '修改密码' }
+            ]
+          }
+        }
+      ]
     },
     {
       path: '/merchant',

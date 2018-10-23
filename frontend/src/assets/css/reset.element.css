@@ -1,0 +1,24 @@
+.el-menu {
+  border-right: transparent;
+}
+.el-card {
+  margin-bottom: 30px;
+}
+.el-card__body {
+  overflow: auto;
+}
+.el-pagination {
+  overflow: hidden;
+  float: right;
+  margin-top: 30px;
+}
+.header .el-breadcrumb .el-breadcrumb__inner {
+  color: #fff;
+  cursor: default;
+  pointer-events: none;
+}
+.header .el-breadcrumb .can-click .el-breadcrumb__inner {
+  color: #fff;
+  cursor: pointer;
+  pointer-events: all;
+}

@@ -4,18 +4,6 @@ const UserSchema = require('../schemas/user.js');
 
 const user = mongoose.model('users', UserSchema);
 
-/**
- * 插入
- */
-
-// 添加 mongoose 静态方法，静态方法在Model层就能使用
-// User.statics.findbyusername = function(username, callback) {
-// 	return this.model("User").find({ username: username }, callback);
-// };
-// User.statics.findbyemail = function(email, callback) {
-// 	return this.model("User").find({ email: email }, callback);
-// };
-
 function insert(username, password, email, emailIsVerify = false) {
   const doc = {
     username,
@@ -81,11 +69,21 @@ function findOne(conditions) {
   });
 }
 
-function deleteOne() {}
+function deleteUser(conditions) {
+  return new Promise((resolve, reject) => {
+    user.remove(conditions, function(err, res) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(res);
+      }
+    });
+  });
+}
 
 module.exports = {
   insert,
   update,
   findOne,
-  deleteOne
+  deleteUser
 };
