@@ -1,87 +1,83 @@
 const express = require('express');
-const nodeRSA = require('node-rsa');
+const NodeRSA = require('node-rsa');
 const fs = require('fs');
 const path = require('path');
+
 const router = express.Router();
 const user = require('../models/user.js');
-const {resDataFormat, getUserInfo, getRandom} = require('../assets/utils.js');
+const { resDataFormat, getUserInfo, getRandom } = require('../assets/utils.js');
 const sendMail = require('../services/email.js');
 
-const checkNotLogin = require('../middlewares/check').checkNotLogin;
-const checkLogin = require('../middlewares/check').checkLogin;
+const { checkNotLogin } = require('../middlewares/check');
+const { checkLogin } = require('../middlewares/check');
 
 // esa加密
 let rsaPubKey = null;
-fs.readFile(path.join(__dirname, '../assets/rsa_1024_pub.pem'), function(
-  err,
-  data
-) {
+fs.readFile(path.join(__dirname, '../assets/rsa_1024_pub.pem'), (err, data) => {
   if (err) {
     return console.error(err);
   }
   const pubKey = data.toString();
-  rsaPubKey = new nodeRSA(pubKey);
-  rsaPubKey.setOptions({encryptionScheme: 'pkcs1'});
+  rsaPubKey = new NodeRSA(pubKey);
+  rsaPubKey.setOptions({ encryptionScheme: 'pkcs1' });
 });
 
 // rsa解密
 let rsaPrivKey = null;
-fs.readFile(path.join(__dirname, '../assets/rsa_1024_priv.pem'), function(
+fs.readFile(path.join(__dirname, '../assets/rsa_1024_priv.pem'), (
   err,
-  data
-) {
+  data,
+) => {
   if (err) {
-    return console.error(err);
+    console.error(err);
   }
   const privKey = data.toString();
-  rsaPrivKey = new nodeRSA(privKey);
-  rsaPrivKey.setOptions({encryptionScheme: 'pkcs1'});
+  rsaPrivKey = new NodeRSA(privKey);
+  rsaPrivKey.setOptions({ encryptionScheme: 'pkcs1' });
 });
 
 router.post('/register', checkNotLogin, (req, res) => {
   user
     .insert(req.body.username, req.body.password, req.body.email)
-    .then(result => {
+    .then((result) => {
       // TODO 发送验证邮件
       sendMail(
         result.email,
         '验证邮件',
         `<p>这是来自****网站的验证邮件，请点击链接进行验证<a href="http://localhost:3000/verify/email/${Buffer.from(
-          req.body.username
+          req.body.username,
         ).toString('base64')}">http://localhost:3000/verify/email/${Buffer.from(
-          req.body.username
-        ).toString('base64')}</a></p>`
-      ).then(result => {
-        if (result === 'ok') {
-          console.log(result);
-        }
+          req.body.username,
+        ).toString('base64')}</a></p>`,
+      ).then((result1) => {
+        console.log(result1);
       });
       const userInfo = {
         username: result.username,
-        email: result.email
+        email: result.email,
       };
       req.session.user = userInfo;
       res.send(resDataFormat(0, 'success', userInfo));
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       res.send(resDataFormat(1, err, {}));
     });
 });
 
 router.post('/login', checkNotLogin, (req, res) => {
-  user.findOne({username: req.body.username}).then(result => {
+  user.findOne({ username: req.body.username }).then((result) => {
     if (result && result.username) {
-      let password = rsaPrivKey.decrypt(req.body.password, 'utf8');
-      let oriPassword = rsaPrivKey.decrypt(result.password, 'utf8');
+      const password = rsaPrivKey.decrypt(req.body.password, 'utf8');
+      const oriPassword = rsaPrivKey.decrypt(result.password, 'utf8');
       if (password === oriPassword) {
         // update logintime
-        user.update(req.body.username, {logintime: Date.now()});
+        user.update(req.body.username, { logintime: Date.now() });
         // TODO 不能删除对象属性？
         delete result.password;
         const userInfo = {
           username: result.username,
-          email: result.email
+          email: result.email,
         };
         req.session.user = userInfo;
         res.send(resDataFormat(0, 'success', userInfo));
@@ -104,23 +100,23 @@ router.get('/getInfo', checkLogin, (req, res) => {
 });
 
 router.post('/findPassword', checkNotLogin, (req, res) => {
-  user.findOne({username: req.body.username}).then(result => {
+  user.findOne({ username: req.body.username }).then((result) => {
     if (result && result.username) {
-      let newPs = getRandom(8);
-      let str = rsaPubKey.encrypt(newPs, 'base64');
+      const newPs = getRandom(8);
+      const str = rsaPubKey.encrypt(newPs, 'base64');
       // 更新密码
-      const p1 = user.update(req.body.username, {password, str});
+      const p1 = user.update(req.body.username, { newPs, str });
       // 发送邮件
       const p2 = sendMail(
         result.email,
         '找回密码',
-        `<p>新密码为${newPs}，登陆后请尽早更换密码。</p>`
+        `<p>新密码为${newPs}，登陆后请尽早更换密码。</p>`,
       );
       Promise.all([p1, p2])
-        .then(results => {
-          res.send(resDataFormat(0, `新密码已发送到您的${result.email}邮箱里`));
+        .then((results) => {
+          res.send(resDataFormat(0, `新密码已发送到您的${results[0].email}邮箱里`));
         })
-        .catch(err => {
+        .catch((err) => {
           // TODO 错误处理，
           // 1：邮件发送成功，密码更新失败
           // 2: 邮件发送失败，密码更新成功
@@ -136,13 +132,13 @@ router.post('/findPassword', checkNotLogin, (req, res) => {
 router.post('/changePassword', checkLogin, (req, res) => {
   const userInfo = req.session.user;
   const oldPass = rsaPrivKey.decrypt(req.body.oldPass, 'utf8');
-  user.findOne({username: userInfo.username}).then(result => {
+  user.findOne({ username: userInfo.username }).then((result) => {
     if (result && result.username) {
-      let pass1 = rsaPrivKey.decrypt(result.password, 'utf8');
+      const pass1 = rsaPrivKey.decrypt(result.password, 'utf8');
       if (oldPass === pass1) {
         user
-          .update(userInfo.username, {password: req.body.newPass})
-          .then(data => {
+          .update(userInfo.username, { password: req.body.newPass })
+          .then((data) => {
             console.log(data);
             res.send(resDataFormat(0, '密码已更新'));
           })
@@ -158,8 +154,8 @@ router.post('/changePassword', checkLogin, (req, res) => {
 
 router.post('/writeOff', checkLogin, (req, res) => {
   user
-    .deleteUser({username: req.session.user.username})
-    .then(result => {
+    .deleteUser({ username: req.session.user.username })
+    .then(() => {
       req.session.user = null;
       res.send(resDataFormat(0, 'success', {}));
     })

@@ -8,27 +8,27 @@ mongoose.set('useCreateIndex', true);
  */
 mongoose.connect(
   config.mongodb,
-  {useNewUrlParser: true}
+  { useNewUrlParser: true },
 );
 
 /**
  * 连接成功
  */
-mongoose.connection.on('connected', function() {
-  console.log('Mongoose connection open to ' + config.mongodb);
+mongoose.connection.on('connected', () => {
+  console.log(`Mongoose connection open to ${config.mongodb}`);
 });
 
 /**
  * 连接异常
  */
-mongoose.connection.on('error', function(err) {
-  console.log('Mongoose connection error: ' + err);
+mongoose.connection.on('error', (err) => {
+  console.log(`Mongoose connection error: ${err}`);
 });
 
 /**
  * 连接断开
  */
-mongoose.connection.on('disconnected', function() {
+mongoose.connection.on('disconnected', () => {
   console.log('Mongoose connection disconnected');
 });
 

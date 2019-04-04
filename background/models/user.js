@@ -3,6 +3,18 @@ const UserSchema = require('../schemas/user.js');
 
 const user = mongoose.model('users', UserSchema);
 
+function findOne(conditions) {
+  return new Promise((resolve, reject) => {
+    user.find(conditions, (err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(res[0]);
+      }
+    });
+  });
+}
+
 function insert(username, password, email, emailIsVerify = false) {
   const doc = {
     username,
@@ -11,21 +23,21 @@ function insert(username, password, email, emailIsVerify = false) {
     emailIsVerify,
     createtime: Date.now(), // 创建时间
     updatetime: Date.now(), // 更新时间
-    logintime: Date.now() // 最近登录时间
+    logintime: Date.now(), // 最近登录时间
   };
   return new Promise((resolve, reject) => {
-    const p1 = findOne({username});
-    const p2 = findOne({email});
+    const p1 = findOne({ username });
+    const p2 = findOne({ email });
 
-    return Promise.all([p1, p2]).then(res => {
+    return Promise.all([p1, p2]).then((res) => {
       if (res[0]) {
         // TODO username 已存在
-        reject('username exist');
+        reject(new Error('username exist'));
         return;
       }
       if (res[1]) {
         // TODO email 已存在
-        reject('email exist');
+        reject(new Error('email exist'));
         return;
       }
       user.create(doc, (err, res) => {
@@ -41,12 +53,12 @@ function insert(username, password, email, emailIsVerify = false) {
 
 function update(username, val = {}) {
   const conditions = {
-    username
+    username,
   };
-  let updatestr = {};
+  const updatestr = {};
   Object.assign(updatestr, val);
   return new Promise((resolve, reject) => {
-    user.updateOne(conditions, updatestr, function(err, res) {
+    user.updateOne(conditions, updatestr, (err, res) => {
       if (err) {
         reject(err);
       } else {
@@ -56,21 +68,10 @@ function update(username, val = {}) {
   });
 }
 
-function findOne(conditions) {
-  return new Promise((resolve, reject) => {
-    user.find(conditions, function(err, res) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(res[0]);
-      }
-    });
-  });
-}
 
 function deleteUser(conditions) {
   return new Promise((resolve, reject) => {
-    user.remove(conditions, function(err, res) {
+    user.remove(conditions, (err, res) => {
       if (err) {
         reject(err);
       } else {
@@ -84,5 +85,5 @@ module.exports = {
   insert,
   update,
   findOne,
-  deleteUser
+  deleteUser,
 };

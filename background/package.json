@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "config-lite": "^2.1.0",
     "connect-mongo": "^2.0.1",
     "express": "^4.16.3",

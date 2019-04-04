@@ -15,12 +15,10 @@ const mailTransport = nodemailer.createTransport({
  * @param {String} subject 发送的主题
  * @param {String} html 发送的html内容
  */
-const sendMail = function (recipient, subject, html, text = '') {
+const sendMail = (recipient, subject, html, text = '') => {
   const options = {
     from: config.email.user, // '"你的名字" <你的邮箱地址>',
     to: recipient, // '"用户1" <邮箱地址1>, "用户2" <邮箱地址2>',
-    // cc         : ''  //抄送
-    // bcc      : ''    //密送
     subject,
     text,
     html, // '<h1>你好，这是一封来自NodeMailer的邮件！</h1><p><img src="cid:00000001"/></p>'
@@ -38,7 +36,7 @@ const sendMail = function (recipient, subject, html, text = '') {
     // ]
   };
   return new Promise((resolve, reject) => {
-    mailTransport.sendMail(options, (error, response) => {
+    mailTransport.sendMail(options, (error) => {
       if (error) {
         reject(error);
       }
