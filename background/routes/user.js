@@ -6,7 +6,6 @@ const router = express.Router();
 const user = require('../models/user.js');
 const {resDataFormat, getUserInfo, getRandom} = require('../assets/utils.js');
 const sendMail = require('../services/email.js');
-const {getDefaultLogger, getServiceLogger} = require('../services/log.js');
 
 const checkNotLogin = require('../middlewares/check').checkNotLogin;
 const checkLogin = require('../middlewares/check').checkLogin;

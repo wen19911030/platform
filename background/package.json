@@ -16,8 +16,15 @@
     "express-winston": "^3.0.0",
     "moment": "^2.22.2",
     "mongoose": "^5.2.8",
+    "morgan": "^1.9.1",
     "node-rsa": "^1.0.1",
     "nodemailer": "^4.6.8",
+    "query-string": "^6.4.2",
     "winston": "^3.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0"
   }
 }

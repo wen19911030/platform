@@ -13,12 +13,22 @@
           <svg-icon icon-class="home"></svg-icon>
           <span slot="title">主页</span>
         </el-menu-item>
-         <el-submenu index="/user">
+        <el-submenu index="/user">
           <template slot="title">
             <svg-icon icon-class="icon-user"></svg-icon>
             <span>用户管理</span>
           </template>
           <el-menu-item index="/user/change-password">修改密码</el-menu-item>
+        </el-submenu>
+        <el-submenu index="/order">
+          <template slot="title">
+            <svg-icon icon-class="icon-order"></svg-icon>
+            <span>点餐管理</span>
+          </template>
+          <el-menu-item index="/order/menu">菜单管理</el-menu-item>
+          <el-menu-item index="/order/tables">桌台管理</el-menu-item>
+          <el-menu-item index="/order/shop">门店管理</el-menu-item>
+          <el-menu-item index="/order/orders">订单管理</el-menu-item>
         </el-submenu>
       </el-menu>
     </el-aside>
