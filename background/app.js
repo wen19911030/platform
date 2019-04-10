@@ -44,6 +44,7 @@ app.use(bodyParser.json());
 const userRouter = require('./routes/user');
 const verifyRouter = require('./routes/verify');
 const analytics = require('./routes/analytics');
+const uploadRouter = require('./routes/upload');
 
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -51,11 +52,10 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/user', userRouter);
+app.use('/api/upload', uploadRouter);
 app.use('/jsSDKAnalytics', analytics);
 app.use('/verify', verifyRouter);
 
 app.listen(config.port, () => {
   console.log('node start');
 });
-
-module.exports = app;
