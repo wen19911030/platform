@@ -44,9 +44,9 @@ router.post('/register', checkNotLogin, (req, res) => {
       sendMail(
         result.email,
         '验证邮件',
-        `<p>这是来自****网站的验证邮件，请点击链接进行验证<a href="http://localhost:3000/verify/email/${Buffer.from(
+        `<p>这是来自****网站的验证邮件，请点击链接进行验证<a href="http://47.102.141.180:9999/api/verify/email/${Buffer.from(
           req.body.username,
-        ).toString('base64')}">http://localhost:3000/verify/email/${Buffer.from(
+        ).toString('base64')}">http://47.102.141.180:9999/api/verify/email/${Buffer.from(
           req.body.username,
         ).toString('base64')}</a></p>`,
       ).then((result1) => {

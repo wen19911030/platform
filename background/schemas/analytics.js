@@ -3,7 +3,7 @@
  */
 const mongoose = require('../services/db.js');
 
-const UserSchema = new mongoose.Schema({
+const AnalyticsSchema = new mongoose.Schema({
   screenH: { type: Number }, // 屏幕高度
   screenW: { type: Number }, // 屏幕宽度
   colorDepth: { type: Number }, // 目标设备或缓冲器上的调色板的比特深度
@@ -21,4 +21,4 @@ const UserSchema = new mongoose.Schema({
   happenTime: { type: Number }, // 事件触发时间（时间戳）
 });
 
-module.exports = UserSchema;
+module.exports = AnalyticsSchema;

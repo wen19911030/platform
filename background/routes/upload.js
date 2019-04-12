@@ -1,6 +1,5 @@
 const express = require('express');
 const multer = require('multer');
-const async = require('async');
 const fs = require('fs');
 
 const router = express.Router();
@@ -41,31 +40,32 @@ const storage = multer.diskStorage({
     cb(null, `${file.originalname}`);
   },
 });
-const upload = multer({ storage });
 
-function saveFile(file, callback) {
-  callback(null, 'complete');
+function fileFilter(req, file, cb) {
+  if (req.body.id && req.body.username && file.originalname.slice(-7) === '.js.map') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
 }
+const upload = multer({ storage, fileFilter });
 
-router.post('/jsmap', upload.array('file', 10), (req, res) => {
-  console.log(req.files);
-  const { files } = req;
-  async.mapLimit(
-    files,
-    3,
-    (file, callback) => {
-      saveFile(file, callback);
-    },
-    (err, result) => {
-      console.log(result);
-      if (err) {
-        console.log(err);
-        res.send('error');
-        return;
-      }
-      res.send('ok');
-    },
-  );
+router.post('/jsmap', upload.single('file'), (req, res) => {
+  const { file } = req;
+  if (file && file.size < 5 * 1024 * 1024) {
+    res.json({
+      status: 0,
+      message: '上传成功',
+      data: {},
+    });
+  } else {
+    fs.unlink(file.path);
+    res.json({
+      status: 1,
+      message: '上传失败',
+      data: {},
+    });
+  }
 });
 
 module.exports = router;

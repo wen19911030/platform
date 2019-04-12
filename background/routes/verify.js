@@ -5,9 +5,7 @@ const user = require('../models/user.js');
 const { resDataFormat } = require('../assets/utils.js');
 
 router.get('/email/:username', (req, res) => {
-  console.log(req.params.username);
   const username = Buffer.from(req.params.username, 'base64').toString();
-  console.log(username);
   user
     .findOne({ username })
     .then((result) => {

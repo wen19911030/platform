@@ -42,9 +42,11 @@ app.use(bodyParser.json());
 
 // 导入路由
 const userRouter = require('./routes/user');
-const verifyRouter = require('./routes/verify');
+const projectRouter = require('./routes/project');
+const jserrorRouter = require('./routes/jserror');
 const analytics = require('./routes/analytics');
 const uploadRouter = require('./routes/upload');
+const verifyRouter = require('./routes/verify');
 
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -52,9 +54,11 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/user', userRouter);
+app.use('/api/project', projectRouter);
+app.use('/api/jserror', jserrorRouter);
 app.use('/api/upload', uploadRouter);
+app.use('/api/verify', verifyRouter);
 app.use('/jsSDKAnalytics', analytics);
-app.use('/verify', verifyRouter);
 
 app.listen(config.port, () => {
   console.log('node start');
