@@ -1,3 +1,4 @@
+import axios from 'axios';
 import request from '../interceptor.js';
 
 export function register(username, password, email) {
@@ -24,7 +25,7 @@ export function login(username, password) {
 }
 
 export function getInfo(interceptorHint) {
-  return request({
+  return axios({
     url: '/api/user/getInfo',
     method: 'get',
     params: { interceptorHint }

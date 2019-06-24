@@ -2,12 +2,15 @@ import axios from 'axios';
 import app from '@/main.js';
 import { list2 } from '@/assets/connect.list';
 
+let baseURL = '';
+
 const CancelToken = axios.CancelToken;
 const pending = []; // 声明一个数组用于存储每个ajax请求的取消函数和ajax标识
+const reg = new RegExp(baseURL);
 const removePending = (config = {}, f) => {
   let url = config.url
     .split('?')[0]
-    .replace(/(.+)\/rc-analyse(.+)/, '/rc-analyse$2');
+    .replace(reg, '');
   let i = pending.indexOf(url);
   if (i > -1) {
     if (typeof f === 'function') {
@@ -20,12 +23,7 @@ const removePending = (config = {}, f) => {
   }
 };
 
-let baseURL = '';
-if (process.env.NODE_ENV === 'test') {
-  baseURL = 'htts://test.example.com';
-} else if (process.env.NODE_ENV === 'production') {
-  baseURL = 'htts://www.example.com';
-}
+
 const request = axios.create({
   baseURL,
   timeout: 5000
@@ -52,7 +50,7 @@ const handleResponseLoading = () => {
 request.interceptors.request.use(
   config => {
     handleRequestLoading();
-    let url = config.url.split('?')[0].replace(/(.+)\/api(.+)/, '/api$2');
+    let url = config.url.split('?')[0].replace(reg, '');
     // 判断该请求是不是在list2列表中；
     let isExist = list2.some(item => item.indexOf(url) > -1);
     if (!isExist) {
